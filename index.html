@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Origami Ape — paper trades for a paper ape</title>
+  <meta name="description" content="Describe a Solana memecoin strategy. An agent paper-trades it on live prices with fake SOL. Paper trades only. Apps, not investments.">
+  <meta name="theme-color" content="#0b0d12">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230b0d12'/%3E%3Cpolygon points='10,36 24,16 30,38' fill='%23243044' stroke='%233ef0c5' stroke-width='2'/%3E%3Cpolygon points='54,36 40,16 34,38' fill='%232a2030' stroke='%23ff4d8d' stroke-width='2'/%3E%3Cpolygon points='32,8 54,22 48,48 32,58 16,48 10,22' fill='%232a3344' stroke='%23f3efe6' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,700&family=Outfit:wght@420;520;650&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <a class="skip" href="#whisper">Skip to the strategy sheet</a>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="hero">
+    <div class="hero-mark" aria-hidden="true">
+      <svg viewBox="0 0 160 160">
+        <polygon points="18,78 52,28 62,86" fill="#243044" stroke="#3ef0c5" stroke-width="3"/>
+        <polygon points="142,78 108,28 98,86" fill="#2a2030" stroke="#ff4d8d" stroke-width="3"/>
+        <polygon points="80,16 132,46 118,112 80,146 42,112 28,46" fill="#2a3344" stroke="#f3efe6" stroke-width="3"/>
+        <polygon points="80,16 132,46 80,72" fill="#3a465c"/>
+        <polygon points="28,46 80,72 42,112" fill="#1a202a"/>
+        <polygon points="58,78 78,70 70,102" fill="#ff4d8d"/>
+        <polygon points="92,76 112,70 100,104" fill="#3ef0c5"/>
+        <polygon points="68,112 92,112 80,128" fill="#e7c56a"/>
+      </svg>
+    </div>
+    <div class="hero-copy">
+      <p class="kicker"><span>Origami Ape</span> <span class="og" id="ogBadge" hidden>OG</span></p>
+      <h1>Let your AI get rekt so you don't.</h1>
+      <p class="lede">Describe a Solana memecoin strategy in plain words. A paper ape folds it into rules and paper-trades live prices with fake SOL. Losses are the joke. They cost nothing.</p>
+      <ul class="taglines">
+        <li>Paper hands, real lessons.</li>
+        <li>Fold before you hold.</li>
+        <li>No wallet trades. No signed swaps.</li>
+      </ul>
+      <div class="hero-row">
+        <span class="pill" id="tierBadge">Free sheet</span>
+        <span class="pill quiet">Fake SOL only</span>
+        <a class="pill" href="https://mirmobe.wordpress.com" target="_blank" rel="noopener noreferrer">Mirmobe's realm</a>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Sections">
+    <a href="#whisper">Whisper</a>
+    <a href="#desk">Ghost Desk</a>
+    <a href="#replay">Replay</a>
+    <a href="#card">Fold Card</a>
+    <a href="#unlock">Unlock</a>
+  </nav>
+
+  <main>
+    <section class="sheet" id="whisper">
+      <div class="section-head">
+        <h2>Strategy Whisperer</h2>
+        <p>A sentence comes back as a structured rule sheet. Templates work with no model at all. The on-device model downloads only after you opt in. Pollinations is the keyless fallback, and it waits in a queue.</p>
+      </div>
+      <div id="agentBar" class="agent-bar" aria-label="Agents"></div>
+      <label class="stack" for="strategyText">Plain-English strategy
+        <textarea id="strategyText" rows="4" maxlength="800" placeholder="Young pairs under 3 hours, at least $10k liquidity, more buys than sells, 0.2 SOL, fold at 10% down or 20% up, hold 30 minutes."></textarea>
+      </label>
+      <div class="row-btns">
+        <button type="button" id="matchTemplateBtn">Pick a template from this text</button>
+        <button type="button" id="pollinationsBtn">Whisper via Pollinations</button>
+        <button type="button" id="optInModel">Download the on-device model</button>
+        <button type="button" id="runBrowser" disabled>Fold with the browser model</button>
+      </div>
+      <p class="hint" id="webgpuNote"></p>
+      <p class="status" id="whisperStatus" role="status"></p>
+      <div id="templateGrid" class="template-grid"></div>
+
+      <div class="split">
+        <form id="rulesForm" class="rules">
+          <label>Name <input id="ruleName" type="text" maxlength="60" autocomplete="off"></label>
+          <label>Max token age (minutes) <input id="maxTokenAgeMinutes" type="number" inputmode="decimal" step="any" min="0" placeholder="off"></label>
+          <label>Min token age (minutes) <input id="minTokenAgeMinutes" type="number" inputmode="decimal" step="any" min="0" placeholder="off"></label>
+          <label>Min liquidity (USD) <input id="minLiquidityUsd" type="number" inputmode="decimal" step="any" min="0" placeholder="off"></label>
+          <label>Min volume, 24h (USD) <input id="minVolumeH24Usd" type="number" inputmode="decimal" step="any" min="0" placeholder="off"></label>
+          <label>Min volume, 1h (USD) <input id="minVolumeH1Usd" type="number" inputmode="decimal" step="any" min="0" placeholder="off"></label>
+          <label>Min 1h price change % <input id="minPriceChangeH1Pct" type="number" inputmode="decimal" step="any" placeholder="off"></label>
+          <label>Max 1h price change % <input id="maxPriceChangeH1Pct" type="number" inputmode="decimal" step="any" placeholder="off"></label>
+          <label>Min buys/sells <input id="minBuysSellsRatio" type="number" inputmode="decimal" step="any" min="0" placeholder="off"></label>
+          <label>Position size (fake SOL) <input id="positionSizeSol" type="number" inputmode="decimal" step="0.05" min="0.05" max="5"></label>
+          <label>Take-profit % <input id="takeProfitPct" type="number" inputmode="decimal" step="any" min="1" max="500"></label>
+          <label>Stop-loss % <input id="stopLossPct" type="number" inputmode="decimal" step="any" min="1" max="90"></label>
+          <label>Max hold (minutes) <input id="maxHoldMinutes" type="number" inputmode="decimal" step="any" min="1" max="1440"></label>
+        </form>
+        <div class="json-col">
+          <label class="stack" for="rulesJson">Editable JSON
+            <textarea id="rulesJson" rows="18" spellcheck="false"></textarea>
+          </label>
+          <button type="button" id="applyJson">Apply JSON</button>
+          <p class="hint">Exit levels are paper only. Empty filters are off. The desk reads this sheet.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet alt" id="desk">
+      <div class="section-head">
+        <h2>Ghost Desk</h2>
+        <p>One live look at DexScreener, then the ape opens and closes paper seats. Fake SOL, paper PnL, and a fold log. It runs only while this tab is open.</p>
+      </div>
+      <div class="row-btns">
+        <button type="button" class="primary" id="startDesk">Start the desk</button>
+        <button type="button" id="scanOnce">Scan once</button>
+        <button type="button" id="pauseDesk">Pause</button>
+        <button type="button" id="crumpleBook">Crumple the book</button>
+      </div>
+      <p class="status" id="deskStatus" role="status">The desk is folded shut.</p>
+      <div class="stats" id="deskStats"></div>
+      <h3>Open seats</h3>
+      <div id="openList" class="log"></div>
+      <h3>Fold log</h3>
+      <div id="tradeLog" class="log"></div>
+    </section>
+
+    <section class="sheet" id="replay">
+      <div class="section-head">
+        <h2>Replay</h2>
+        <p>Walk the active sheet across GeckoTerminal candles for a token or a pool. About five calls a minute, so this caches hard and shows the wait.</p>
+      </div>
+      <div class="replay-row">
+        <label class="stack">Find
+          <input id="replayQuery" type="text" autocomplete="off" spellcheck="false" placeholder="Token name, mint, or pool address">
+        </label>
+        <label class="stack">Treat as
+          <select id="replayKind">
+            <option value="auto">Auto</option>
+            <option value="token">Token mint</option>
+            <option value="pool">Pool address</option>
+          </select>
+        </label>
+        <label class="stack">Candles
+          <select id="replayTf">
+            <option value="m15">15 minute</option>
+            <option value="h1" selected>1 hour</option>
+            <option value="h4">4 hour</option>
+          </select>
+        </label>
+      </div>
+      <div class="row-btns">
+        <button type="button" id="replayFind">Find pools</button>
+        <button type="button" class="primary" id="replayGo">Walk the candles</button>
+      </div>
+      <div class="track" id="replayTrack" hidden><div id="replayBar"></div></div>
+      <p class="status" id="replayStatus" role="status"></p>
+      <div id="poolList" class="pool-list"></div>
+      <div id="replayOut" class="log"></div>
+      <p class="hint">Candle replay can see price and volume. It cannot see liquidity or the buys/sells ratio, so those filters are skipped and listed. A 1h change rule is applied to whatever candle size you picked, using a rolling sum for volume.</p>
+    </section>
+
+    <section class="sheet alt" id="card">
+      <div class="section-head">
+        <h2>Fold Card</h2>
+        <p>A PNG of this paper session. The line “PAPER TRADE — NOT REAL” is always on it. Share opens an X draft. Nothing is posted for you.</p>
+      </div>
+      <div class="row-btns">
+        <label class="check"><input id="cardSource" type="checkbox"> Use the last replay instead of the desk</label>
+        <label class="check"><input id="cardBackdrop" type="checkbox"> Optional Pollinations backdrop</label>
+      </div>
+      <div class="card-frame">
+        <canvas id="foldCanvas" width="1200" height="675" aria-label="Paper trade card, watermarked PAPER TRADE — NOT REAL"></canvas>
+      </div>
+      <div class="row-btns">
+        <button type="button" class="primary" id="downloadCard">Download PNG</button>
+        <a class="button" id="shareX" href="https://x.com/intent/post?text=" target="_blank" rel="noopener noreferrer">Share text on X</a>
+        <button type="button" id="redrawCard">Redraw</button>
+      </div>
+      <p class="status" id="cardStatus" role="status"></p>
+    </section>
+
+    <section class="sheet" id="soon">
+      <div class="section-head">
+        <h2>Still in the stack</h2>
+        <p>The full sheet is five agents. These three stay marked coming soon, even after unlock.</p>
+      </div>
+      <div class="soon-grid">
+        <article>
+          <h3>Duel</h3>
+          <p>Two paper apes, one tape, bragging rights only.</p>
+          <span class="pill">Coming soon</span>
+        </article>
+        <article>
+          <h3>Diary</h3>
+          <p>A fold-by-fold notebook of the fake book.</p>
+          <span class="pill">Coming soon</span>
+        </article>
+        <article>
+          <h3>Skins</h3>
+          <p>Other paper animals. Same fake SOL.</p>
+          <span class="pill">Coming soon</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="sheet gold" id="unlock">
+      <div class="section-head">
+        <h2>Full sheet</h2>
+        <p>Free is one agent plus Fold Cards. Five agents unlock with <strong>0.05 SOL</strong> sent to the address below, or by holding 1,000,000+ $QUESTO. That holder check signs a message, not a trade. Apps, not investments.</p>
+      </div>
+      <p class="hint">Origami Ape never asks for a seed phrase or a private key. Paper trades are not signed and not sent.</p>
+      <div class="pay-grid">
+        <div>
+          <p class="pay-amount" id="payAmount">0.05 SOL</p>
+          <p class="hint">App unlock. This is a real transfer you send yourself. It is separate from the fake book.</p>
+          <div class="address-row">
+            <code id="payAddress"></code>
+            <button type="button" id="copyAddress">Copy</button>
+          </div>
+          <a class="button primary" id="payLink" href="#">Open a Solana Pay link</a>
+          <label class="stack" for="txSigInput">Already paid? Paste the signature
+            <input id="txSigInput" type="text" autocomplete="off" spellcheck="false" placeholder="Signature or explorer link">
+          </label>
+          <button type="button" id="verifyPayBtn">Verify payment</button>
+          <p class="status" id="payStatus" role="status"></p>
+          <p class="hint">A signature can be used once in this browser. The transaction must have succeeded, be newer than seven days, and show at least 0.05 SOL received by that address, including addresses loaded into the transaction.</p>
+        </div>
+        <div class="holder-box">
+          <h3>QUESTO holders</h3>
+          <p>Hold 1,000,000+ $QUESTO and the full sheet is free, with an OG badge. This app only. The balance is read from a public RPC and checked about once a day.</p>
+          <button type="button" id="questoUnlockBtn">I hold $QUESTO — sign a message</button>
+          <div id="questoWallets" class="row-btns" hidden></div>
+          <p><a id="questoBuyLink" href="https://pump.fun/coin/5eCknU1RcP4QwWXCYicE4VGG8KY69TTUL7YZTma4pump" target="_blank" rel="noopener noreferrer">$QUESTO on pump.fun</a></p>
+          <p class="status" id="questoStatus" role="status"></p>
+          <div id="foldMount"></div>
+        </div>
+      </div>
+    </section>
+
+    <details class="limits">
+      <summary>Limits of this paper desk</summary>
+      <ul>
+        <li>DexScreener public data, kept under 300 requests a minute, with a short cache. Scans are about every 20 seconds once the desk is started.</li>
+        <li>GeckoTerminal candles, about 5 calls a minute, cached on this device for 15 minutes.</li>
+        <li>Pollinations text is queued. The on-device model is about 280 MB and needs WebGPU.</li>
+        <li>The desk pauses while the tab is hidden. No fees or slippage are modeled. At most three open paper seats per agent.</li>
+        <li>Replay skips liquidity and the buys/sells ratio. Those numbers are not in the public candles.</li>
+      </ul>
+    </details>
+  </main>
+
+  <footer>
+    <p>Origami Ape is an app for paper-trading a strategy against public prices. <strong>Apps, not investments.</strong></p>
+    <p><strong>Paper trades only. Not financial advice.</strong></p>
+    <p>No real swaps, no sniping, and no auto-trading. Tied to <a href="https://mirmobe.wordpress.com" target="_blank" rel="noopener noreferrer">mirmobe.wordpress.com</a>. Static files for GitHub Pages.</p>
+  </footer>
+
+  <div id="gateDialog" class="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle" hidden>
+    <div class="gate-card">
+      <h2 id="gateTitle">One agent on the free sheet</h2>
+      <p>Five paper agents come with the full unlock: 0.05 SOL, or 1,000,000+ $QUESTO for an OG badge. Apps, not investments.</p>
+      <div class="row-btns">
+        <a class="button primary" href="#unlock" id="gateUnlock">See unlock</a>
+        <button type="button" id="gateClose">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
